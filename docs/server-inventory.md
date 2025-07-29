@@ -27,7 +27,7 @@ graph TB
 
     subgraph "Docker Network: mcp-network (192.168.100.0/27)"
         subgraph "Mixed MCP Server Deployment"
-            E["everything-mcp<br/>192.168.100.2:3000<br/>📦 @modelcontextprotocol/server-everything<br/>✅ Native HTTP MCP<br/>🔄 streamableHttp<br/>🎯 Reference Implementation"]
+            E["everything-mcp<br/>192.168.100.2:3001<br/>📦 @modelcontextprotocol/server-everything<br/>✅ Native HTTP MCP<br/>🔄 streamableHttp<br/>🎯 Reference Implementation<br/>✅ FIXED"]
             F["filesystem-mcp<br/>192.168.100.3:3001<br/>🐍 mcp-streamablehttp-proxy<br/>📦 @modelcontextprotocol/server-filesystem<br/>🔄 stdio → HTTP<br/>📁 File Operations"]
             G["git-mcp<br/>192.168.100.4:3002<br/>🐍 mcp-streamablehttp-proxy<br/>📦 mcp-server-git<br/>🔄 stdio → HTTP<br/>🗂️ Version Control"]
             M["memory-mcp<br/>192.168.100.5:3003<br/>📇 mcp-proxy<br/>📦 @modelcontextprotocol/server-memory<br/>🔄 stdio → HTTP<br/>🧠 Knowledge Graph"]
@@ -43,12 +43,12 @@ graph TB
     end
 
     %% Port Mappings
-    P3000 -->|"TCP 3000"| E
-    P3001 -->|"TCP 3001"| F
-    P3002 -->|"TCP 3002"| G
-    P3003 -->|"TCP 3003"| M
-    P8000 -->|"TCP 80"| GW
-    P8080 -->|"TCP 8080"| GW
+    P3000 -->|"Host:3000 → Container:3000"| E
+    P3001 -->|"Host:3001 → Container:3001"| F
+    P3002 -->|"Host:3002 → Container:3002"| G
+    P3003 -->|"Host:3003 → Container:3003"| M
+    P8000 -->|"Host:8000 → Container:80"| GW
+    P8080 -->|"Host:8080 → Container:8080"| GW
 
     %% Gateway Routing
     GW -->|"/everything/"| E
@@ -79,8 +79,8 @@ graph TB
 
 | Container Name | IP Address | Host Port | Container Port | Package | Transport Method | HTTP Working | Status |
 |---------------|------------|-----------|----------------|---------|------------------|--------------|--------|
-| everything-mcp | 192.168.100.2 | 3000 | 3000 | @modelcontextprotocol/server-everything | ✅ Native streamableHttp | ✅ Yes | **ACTIVE** |
-| filesystem-mcp | 192.168.100.3 | 3001 | 3001 | @modelcontextprotocol/server-filesystem | 🔄 mcp-streamablehttp-proxy | ✅ Yes | **ACTIVE** |
+| everything-mcp | 192.168.100.2 | 3000 | 3001 | @modelcontextprotocol/server-everything | ✅ Native streamableHttp | ✅ Working | **ACTIVE** |
+| filesystem-mcp | 192.168.100.3 | 3001 | 3001 | @modelcontextprotocol/server-filesystem | 🔄 mcp-streamablehttp-proxy | ✅ 12 Tools | **ACTIVE** |
 | git-mcp | 192.168.100.4 | 3002 | 3002 | mcp-server-git | 🔄 mcp-streamablehttp-proxy | ✅ Yes | **ACTIVE** |
 | memory-mcp | 192.168.100.5 | 3003 | 3003 | @modelcontextprotocol/server-memory | 🔄 mcp-proxy (Node.js) | 🔧 Configuring | **PENDING** |
 
@@ -103,7 +103,7 @@ graph TB
 ## Service Access URLs
 
 ### Direct MCP Server Access
-- **Everything MCP** (✅ Native): http://localhost:3000/ - Reference implementation
+- **Everything MCP** (✅ Native HTTP): http://localhost:3000/ - Reference implementation
 - **Filesystem MCP** (🔄 Proxied): http://localhost:3001/mcp - File operations
 - **Git MCP** (🔄 Proxied): http://localhost:3002/mcp - Version control
 - **Memory MCP** (🔄 Proxied): http://localhost:3003/mcp - Knowledge graph
@@ -121,13 +121,15 @@ graph TB
 
 ## Mixed MCP Server Details
 
-### 🎯 Everything MCP (192.168.100.2:3000) ✅ **NATIVE HTTP**
+### 🎯 Everything MCP (192.168.100.2:3001) ✅ **NATIVE HTTP** ✅ **WORKING**
 - **Implementation**: Node.js (Official Reference Server)
 - **Package**: @modelcontextprotocol/server-everything
 - **Transport**: ✅ Native streamableHttp (built-in HTTP support)
 - **Capabilities**: Reference implementation with prompts, resources, and tools
 - **Use Case**: Comprehensive testing with all MCP protocol features
-- **Status**: **FULLY OPERATIONAL - NATIVE HTTP**
+- **Status**: **FULLY OPERATIONAL - FIXED**
+- **Note**: Container listens on port 3001 (hardcoded in package), host port 3000 correctly maps to container port 3001
+- **Resolution**: Updated docker-compose.yml port mapping from "3000:3000" to "3000:3001"
 
 ### 📁 Filesystem MCP (192.168.100.3:3001) 🔄 **PROXIED HTTP**
 - **Implementation**: Python proxy wrapper
@@ -136,7 +138,8 @@ graph TB
 - **Transport**: 🔄 stdio → HTTP via Python proxy
 - **Capabilities**: Secure file operations with configurable access controls
 - **Use Case**: Demonstrates stdio-to-HTTP wrapping for file system operations
-- **Status**: **FULLY OPERATIONAL - PROXIED STDIO**
+- **Status**: **FULLY OPERATIONAL - 12 FILE OPERATION TOOLS**
+- **Tools**: read_file, read_multiple_files, write_file, edit_file, create_directory, list_directory, list_directory_with_sizes, directory_tree, move_file, search_files, get_file_info, list_allowed_directories
 
 ### 🗂️ Git MCP (192.168.100.4:3002) 🔄 **PROXIED HTTP**
 - **Implementation**: Python proxy wrapper
@@ -225,7 +228,7 @@ docker compose down --volumes --remove-orphans
 ## Security Scanner Testing Status
 
 ### ✅ Ready for Scanning
-- **Port 3000**: Everything MCP Server - **CONFIRMED NATIVE HTTP MCP SERVER**
+- **Port 3000**: Everything MCP Server - **CONFIRMED NATIVE HTTP MCP SERVER** ✅ **WORKING**
 - **Port 3001**: Filesystem MCP Server - **CONFIRMED PROXIED HTTP MCP SERVER** (Python)
 - **Port 3002**: Git MCP Server - **CONFIRMED PROXIED HTTP MCP SERVER** (Python)
 - **Port 3003**: Memory MCP Server - **CONFIGURING PROXIED HTTP MCP SERVER** (Node.js)
@@ -238,12 +241,20 @@ docker compose down --volumes --remove-orphans
 - ✅ Gateway Health Check: http://localhost:8080/health
 
 ### MCP Protocol Test Results
-- **everything-mcp**: ✅ **CONFIRMED NATIVE HTTP MCP SERVER** (Reference Implementation)
-- **filesystem-mcp**: ✅ **CONFIRMED PROXIED HTTP MCP SERVER** (File Operations via Python)
+- **everything-mcp**: ✅ **CONFIRMED NATIVE HTTP MCP SERVER** (Reference Implementation - Host:3000→Container:3001)
+- **filesystem-mcp**: ✅ **CONFIRMED PROXIED HTTP MCP SERVER WITH 12 TOOLS** (File Operations via Python)
 - **git-mcp**: ✅ **CONFIRMED PROXIED HTTP MCP SERVER** (Version Control via Python)
 - **memory-mcp**: 🔧 **CONFIGURING PROXIED HTTP MCP SERVER** (Knowledge Graph via Node.js)
 
 **✅ DIVERSITY + METHODS**: Demonstrates **DIFFERENT SERVER TYPES** with **DIFFERENT TRANSPORT METHODS** from the [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) list
+
+## ✅ Configuration Notes
+
+### Everything MCP Port Mapping
+- **Package Behavior**: @modelcontextprotocol/server-everything ignores `--port` parameter and defaults to port 3001
+- **Solution**: Use port mapping "3000:3001" to map host port 3000 to container port 3001
+- **Result**: External access via localhost:3000 works correctly
+- **Learning**: Some MCP packages have hardcoded ports regardless of CLI parameters
 
 ## Key Learnings Demonstrated
 

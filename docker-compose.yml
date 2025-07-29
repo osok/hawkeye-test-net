@@ -10,11 +10,12 @@ services:
   # DIFFERENT MCP SERVERS - Using mcp-streamablehttp-proxy to wrap stdio servers
 
   # Everything MCP Server (Reference Implementation) - Port 3000
+  # NOTE: server-everything ignores --port parameter and defaults to 3001
   everything-mcp:
     image: node:20-alpine
     container_name: everything-mcp
     ports:
-      - "3000:3000"
+      - "3000:3001"  # Map host 3000 to container 3001 (where server actually listens)
     command: ["npx", "-y", "@modelcontextprotocol/server-everything", "streamableHttp", "--port", "3000", "--host", "0.0.0.0"]
     networks:
       mcp-network:
@@ -23,11 +24,11 @@ services:
 
   # Filesystem MCP Server (File Operations) via Python Proxy - Port 3001  
   filesystem-mcp:
-    image: python:3.11-alpine
+    image: node:20-alpine
     container_name: filesystem-mcp
     ports:
       - "3001:3001"
-    command: sh -c "pip install mcp-streamablehttp-proxy && mcp-streamablehttp-proxy --host 0.0.0.0 --port 3001 npx @modelcontextprotocol/server-filesystem /tmp"
+    command: sh -c "apk add --no-cache python3 py3-pip && pip install --break-system-packages mcp-streamablehttp-proxy && mcp-streamablehttp-proxy --host 0.0.0.0 --port 3001 npx @modelcontextprotocol/server-filesystem /tmp"
     networks:
       mcp-network:
         ipv4_address: 192.168.100.3
@@ -35,11 +36,11 @@ services:
 
   # Git MCP Server (Version Control) via Python Proxy - Port 3002
   git-mcp:
-    image: python:3.11-alpine
+    image: node:20-alpine
     container_name: git-mcp
     ports:
       - "3002:3002"
-    command: sh -c "apk add --no-cache git nodejs npm && pip install mcp-streamablehttp-proxy && mcp-streamablehttp-proxy --host 0.0.0.0 --port 3002 npx mcp-server-git"
+    command: sh -c "apk add --no-cache git python3 py3-pip && pip install --break-system-packages mcp-streamablehttp-proxy && mcp-streamablehttp-proxy --host 0.0.0.0 --port 3002 npx mcp-server-git"
     networks:
       mcp-network:
         ipv4_address: 192.168.100.4
