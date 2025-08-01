@@ -1,0 +1,37 @@
+{
+  "project": {
+    "name": "MCP Demo Project",
+    "version": "1.0.0",
+    "description": "Demonstration project for MCP filesystem server capabilities"
+  },
+  "server": {
+    "host": "localhost",
+    "port": 3000,
+    "ssl": false
+  },
+  "features": {
+    "fileOperations": true,
+    "directoryListing": true,
+    "searchCapabilities": true,
+    "secureAccess": true
+  },
+  "security": {
+    "allowedExtensions": [".html", ".js", ".css", ".json", ".txt", ".md"],
+    "maxFileSize": "10MB",
+    "rateLimiting": {
+      "enabled": true,
+      "requestsPerMinute": 100
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/app.log",
+    "console": true
+  },
+  "demo": {
+    "purpose": "MCP Server Testing",
+    "hasSecrets": true,
+    "secretsFile": ".env",
+    "notes": "This project demonstrates MCP filesystem server capabilities with secure environment variable handling"
+  }
+} 

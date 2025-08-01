@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Demo App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .feature {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .feature h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+        .feature p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .status {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border: 1px solid #c3e6cb;
+        }
+        .code-snippet {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            text-align: left;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 MCP Demo Project</h1>
+        <p class="subtitle">Model Context Protocol Filesystem Server Test</p>
+        
+        <div class="status">
+            <strong>✅ Server Status:</strong> MCP Filesystem Server is running and accessible!
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🔐 Secure Access</h3>
+                <p>Environment variables protected in .env file</p>
+            </div>
+            <div class="feature">
+                <h3>📁 File Operations</h3>
+                <p>Read, write, and manage files through MCP</p>
+            </div>
+            <div class="feature">
+                <h3>🔍 Directory Listing</h3>
+                <p>Browse and search project structure</p>
+            </div>
+            <div class="feature">
+                <h3>🛠️ Tool Integration</h3>
+                <p>14+ filesystem tools available via MCP</p>
+            </div>
+        </div>
+
+        <div class="code-snippet">
+            <strong>Test the MCP server:</strong><br>
+            python src/mcp_inspector.py http://192.168.100.3:3001
+        </div>
+
+        <p style="margin-top: 2rem; color: #666; font-size: 0.9rem;">
+            This demo showcases MCP filesystem server capabilities with secure environment handling.
+        </p>
+    </div>
+</body>
+</html> 
